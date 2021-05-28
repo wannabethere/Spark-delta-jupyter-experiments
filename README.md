@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Spark-delta-jupyter-experiments
 =======
 # Apache Spark Standalone Cluster on Docker
@@ -149,4 +149,4 @@ project is maintained by:
 > Support us on GitHub by staring this project :star:
 
 > Support us on [Patreon](https://www.patreon.com/andreperez). :sparkling_heart:
->>>>>>> master
+
