@@ -1,0 +1,44 @@
+{
+	"ownerid": "id",
+	"typeofdatagrid": "small",
+	"dataset": {
+		"clickstream": {
+			"pk": "user_custom_id",
+			"sk": "event_id",
+			"domain": "clickstream",
+			"timestamp": "event_timestamp"
+
+		},
+		"users": {
+			"pk": "user_custom_id",
+			"sk": "event_id",
+			"domain": "clickstream",
+			"timestamp": "event_timestamp"
+
+		}
+	},
+	"behavior_analysis": {
+		"dashboard_users": [{
+			"userid": "listof users",
+			"permission": ""
+		}],
+		"state": {
+			"column": "page_url_path",
+			"states": ["pagenames"]
+		},
+		"numclusters": 8,
+		"numsteps": 8,
+		"filters": ["namesofcolumns"],
+		"source": ["clickstream", "users"],
+		"destination": {
+			"csv": {
+				"outputtype": "file",
+				"patternname": "xyz_",
+				"frequency": "daily/monthly/weekly/hourly"
+			},
+			"marketo": [
+				"marketospecific definitions"
+			]
+		}
+	}
+}
