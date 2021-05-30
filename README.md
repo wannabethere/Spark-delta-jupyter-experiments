@@ -1,4 +1,4 @@
-
+Fork of the original Spark Stand alone cluster git repo
 # Spark-delta-jupyter-experiments
 =======
 # Apache Spark Standalone Cluster on Docker
