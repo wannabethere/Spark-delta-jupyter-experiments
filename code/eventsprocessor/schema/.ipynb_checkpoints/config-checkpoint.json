@@ -1,0 +1,120 @@
+{
+	"requiredcolumns": {
+		"timestamp": "event_timestamp",
+		"userid": "user_custom_id",
+		"state": "page_url_path",
+		"usersession": "sessionid"
+	},
+	"piicolumns": {
+		"properties": {
+			"address": {
+				"type": "object",
+				"properties": {
+					"city": {
+                        "sourcecol": "city",
+						"type": "string",
+						"maxLength": 512
+					},
+					"country": {
+                        "sourcecol": "country",
+						"type": "string"
+					},
+					"postalCode": {
+                        "sourcecol": "zipcode",
+						"type": "string"
+					},
+					"state": {
+                        "sourcecol": "state",
+						"type": "string"
+					},
+					"street": {
+                        "sourcecol": "address1",
+						"type": "string"
+					}
+				},
+				"additionalProperties": true
+			},
+			"age": {
+                "sourcecol": "age",
+				"type": "integer"
+			},
+			"avatar": {
+                "sourcecol": "avatar",
+				"type": "string",
+				"format": "uri",
+				"maxLength": 8192
+			},
+			"birthday": {
+                "sourcecol": "birthdate",
+				"type": "string",
+				"format": "date-time"
+			},
+			"description": {
+				"type": "string"
+			},
+			"email": {
+                "sourcecol": "user_custom_id",
+				"type": "string",
+				"format": "email",
+				"maxLength": 512
+			},
+			"firstName": {
+                "sourcecol": "firstName",
+				"type": "string"
+			},
+			"id": {
+                "sourcecol": "user_domain_id",
+				"type": "string"
+			},
+			"lastName": {
+                "sourcecol": "lastName",
+				"type": "string"
+			},
+			"phone": {
+                "sourcecol": "phone",
+				"type": "string",
+				"maxLength": 128
+			},
+			"title": {
+                "sourcecol": "title",
+				"type": "string"
+			},
+			"username": {
+                "sourcecol": "user_domain_id",
+				"type": "string"
+			},
+			"location": {
+				"type": "object",
+				"properties": {
+					"city": {
+                        "sourcecol": "city",
+						"type": "string",
+						"maxLength": 512
+					},
+					"country": {
+                        "sourcecol": "country",
+						"type": "string",
+						"maxLength": 512
+					},
+					"latitude": {
+                        "sourcecol": "geo_latitude",
+						"type": "number"
+					},
+					"longitude": {
+                        "sourcecol": "geo_longitude",
+						"type": "number"
+					},
+					"speed": {
+						"type": "integer",
+                        "sourcecol": "speed",
+						"maximum": 9223372036854775807,
+						"minimum": 0
+					}
+				},
+				"additionalProperties": true
+			}
+		}
+	}
+
+
+}

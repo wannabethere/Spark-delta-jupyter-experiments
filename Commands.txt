@@ -1,0 +1,40 @@
+docker exec -it jupyterlab sh -c "/usr/local/bin/spark-submit --jars sqlite-jdbc-3.8.11.2.jar --packages io.delta:delta-core_2.12:0.7.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.0.2,org.xerial:sqlite-jdbc:jar:3.31.1 /opt/workspace/eventsprocessor/incoming/rawEvents.py"
+
+
+spark-submit file1.py \
+    --master local \
+    --driver-memory 2g \
+    --executor-memory 2g \
+    --py-files file2.py,file3.py,file4.py \
+    --files conf.txt
+
+docker exec -it jupyterlab sh -c "/usr/local/bin/spark-submit --packages io.delta:delta-core_2.12:0.7.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.0.2 /opt/workspace/eventsprocessor/incoming/etlsqllite.py"
+
+
+spark-submit --jars ../extras/sqlite-jdbc-3.8.11.2.jar example.py
+val smallBatchSchema = spark.read.json("/batch/batchName.txt").schema
+
+val inputDf = spark.readStream.format("kafka")
+                             .option("kafka.bootstrap.servers", "node:9092")
+                             .option("subscribe", "topicName")
+                             .option("startingOffsets", "earliest")
+                             .load()
+
+val dataDf = inputDf.selectExpr("CAST(value AS STRING) as json")
+                    .select( from_json($"json", schema=smallBatchSchema).as("data"))
+                    .select("data.*")
+
+
+
+val rawKafkaDF = sparkSession.sqlContext.readStream
+  .format("kafka")
+  .option("kafka.bootstrap.servers","localhost:9092")
+  .option("subscribe",topic)
+  .load()
+  val columnsToSelect = columns.map( x => new Column("value." + x))
+  val kafkaDF = rawKafkaDF.select(columnsToSelect:_*)
+
+  // some analytics using stream dataframe kafkaDF
+
+  val query = kafkaDF.writeStream.format("console").start()
+  query.awaitTermination()                    

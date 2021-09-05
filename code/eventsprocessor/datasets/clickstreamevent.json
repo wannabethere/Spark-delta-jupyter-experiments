@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "event_timestamp": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string"
+    },
+    "page_url": {
+      "type": "string"
+    },
+    "page_url_path": {
+      "type": "string"
+    },
+    "referer_url": {
+      "type": "string"
+    },
+    "referer_url_scheme": {
+      "type": "string"
+    },
+    "referer_url_port": {
+      "type": "string"
+    },
+    "referer_medium": {
+      "type": "string"
+    },
+    "utm_medium": {
+      "type": "string"
+    },
+    "utm_source": {
+      "type": "string"
+    },
+    "utm_content": {
+      "type": "string"
+    },
+    "utm_campaign": {
+      "type": "string"
+    },
+    "click_id": {
+      "type": "string"
+    },
+    "geo_latitude": {
+      "type": "string"
+    },
+    "geo_longitude": {
+      "type": "string"
+    },
+    "geo_country": {
+      "type": "string"
+    },
+    "geo_timezone": {
+      "type": "string"
+    },
+    "geo_region_name": {
+      "type": "string"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "browser_name": {
+      "type": "string"
+    },
+    "browser_user_agent": {
+      "type": "string"
+    },
+    "browser_language": {
+      "type": "string"
+    },
+    "os": {
+      "type": "string"
+    },
+    "os_name": {
+      "type": "string"
+    },
+    "os_timezone": {
+      "type": "string"
+    },
+    "device_type": {
+      "type": "string"
+    },
+    "device_is_mobile": {
+      "type": "string"
+    },
+    "user_custom_id": {
+      "type": "string"
+    },
+    "user_domain_id": {
+      "type": "string"
+    }
+  }
+}

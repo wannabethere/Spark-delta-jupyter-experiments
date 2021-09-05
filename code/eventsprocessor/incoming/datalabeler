@@ -1,0 +1,32 @@
+import os
+import sys
+import json
+import pandas as pd
+sys.path.insert(0, '..')
+import dataprofiler as dp
+import tensorflow as tf
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
+data = dp.Data("../dataprofiler/tests/data/csv/SchoolDataSmall.csv")
+df_data = data.data
+df_data.head()
+
+labeler = dp.DataLabeler(labeler_type='structured')
+
+# print out the labels and label mapping
+print("Labels: {}".format(labeler.labels)) 
+print("\n")
+print("Label Mapping: {}".format(labeler.label_mapping))
+print("\n")
+
+# make predictions and get labels for each cell going row by row
+# predict options are model dependent and the default model can show prediction confidences
+predictions = labeler.predict(data, predict_options={"show_confidences": True})
+
+# display prediction results
+print("Predictions: {}".format(predictions['pred']))
+print("\n")
+
+# display confidence results
+print("Confidences: {}".format(predictions['conf']))
+

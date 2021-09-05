@@ -1,0 +1,157 @@
+from scipy.optimize import minimize
+from autograd import value_and_grad, hessian
+import numpy as np
+import pandas as pd
+import hvplot.pandas
+
+def _loglikelihood(params, n, active, return_s=False):
+    """
+    params: alpha and beta initial values    
+    n: total number of people starting at t0
+    actives: # of people stayed active at each time point starting at t1
+    """
+    t = list(range(1, len(active)+1))  # t: [ 1, 2, ...]
+    alpha, beta = params
+    p = []
+    s = []
+    lost = []
+    ll = []
+    for i in t:
+        if i == 1: 
+            p.append(alpha/(alpha+beta))
+            s.append(1- p[0])
+            lost.append(n-active[0])
+        else: 
+            p.append((beta+i-2)/(alpha+beta+i-1) * p[-1])
+            s.append(s[-1] - p[i-1])
+            lost.append(active[i-2] - active[i-1])
+            
+        ll.append(lost[i-1] * np.log(p[i-1]))
+        #print('p: ', p[i-1])
+    ll.append(active[-1] * np.log(s[-1]))
+    
+    #print('s: ', s[-1])
+    if return_s== True:
+        return s
+    else:
+        return ll 
+    
+def _negative_log_likelihood(params, n, active):
+    return -(np.sum(_loglikelihood(params, n, active)))      
+
+params = np.array((1,1)) #init params
+n = 1000
+active = [631, 482, 382, 326]
+
+
+res = minimize(
+        _negative_log_likelihood,
+        args = (n, active), #parameters we do not optimize on 
+        tol=1e-13,
+        x0= np.array((1,1)), #starting value of params 
+        bounds=[(0, None), (0, None)],
+        options={'ftol' : 1e-100000000},
+    )
+res
+
+
+def model_fit_survival(params, n, active):
+    t = list(range(1, len(active)+1))
+    df_plot = pd.DataFrame({'t': t, 
+                            'observed': [x/n for x in active], 
+                            'model': _loglikelihood(params, n, active, return_s=True)})
+    return df_plot.hvplot('t',['observed', 'model'], title = 'Survival rate')
+
+# using init params (1,1)
+model_fit_survival(params, n, active)
+
+# using optimized params res.x 
+model_fit_survival(res.x, n, active)
+
+
+def e_clv(alpha, beta, d, net_cf):
+    t = list(range(0, 200))
+    r = []
+    s = []
+    disc = []
+    for i in t:
+        if i == 0: 
+            r.append(0)
+            s.append(1)
+            disc.append(1)
+        else:
+            r.append((beta+i-1)/(alpha+beta+i-1))
+            s.append(r[i]*s[i-1])
+            disc.append((1/(1+d)**i))
+    clv = net_cf * sum([x * y for x, y in zip(s, disc)])
+    return clv
+
+        
+    
+alpha, beta = res.x
+d = 0.1
+net_cf = 100
+e_clv(alpha, beta, d, net_cf)
+
+
+from pyspark.sql import Window
+import pyspark.sql.functions as psf
+df = df.withColumn(
+    "id", 
+    psf.monotonically_increasing_id()
+)
+w = Window.orderBy("id")
+df = df.withColumn("rn", psf.row_number().over(w))
+    +---+----------+-----------+---+
+    |int|      date|         id| rn|
+    +---+----------+-----------+---+
+    |  1|2011-01-01|17179869184|  1|
+    |  1|2012-01-01|42949672960|  2|
+    |  2|2013-01-01|68719476736|  3|
+    |  1|2014-01-01|94489280512|  4|
+    +---+----------+-----------+---+
+    
+df1 = df.select(
+    "int", 
+    df.date.alias("date1"), 
+    (df.rn - df.int).alias("rn")
+)
+df2 = df.select(
+    df.date.alias("date2"), 
+    'rn'
+)
+
+df1 = df.select(
+    "int", 
+    df.date.alias("date1"), 
+    (df.rn - df.int).alias("rn")
+)
+df2 = df.select(
+    df.date.alias("date2"), 
+    'rn'
+)
+
+    +---+----------+----------+---------+
+    |int|     date1|     date2|date_diff|
+    +---+----------+----------+---------+
+    |  1|2012-01-01|2011-01-01|      365|
+    |  2|2013-01-01|2011-01-01|      731|
+    |  1|2014-01-01|2013-01-01|      365|
+    +---+----------+----------+---------+
+    
+    
+ w = Window.partitionBy(cols)
+df.select(cols + [(f.col('value') / f.sum('value').over(w)).alias('fraction')]).show()
+
+https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/968100988546031/157591980591166/8836542754149149/latest.html
+
+from pyspark.sql.functions import col
+column_list = ["col1","col2"]
+win_spec = Window.partitionBy([col(x) for x in column_list])
+
+from pyspark.sql import functions as F, Window
+
+Decreasing and multi order columns
+Window.partitionBy("Price").orderBy(*[F.desc(c) for c in ["Price","constructed"]])
+df.select("*",F.row_number().over(
+    Window.partitionBy("Price").orderBy(*[F.desc(c) for c in ["Price","constructed"]]),ascending = False).alias("Rank"))).display()

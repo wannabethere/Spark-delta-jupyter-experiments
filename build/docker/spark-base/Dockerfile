@@ -30,6 +30,10 @@ RUN curl https://repo.maven.apache.org/maven2/org/apache/spark/spark-sql-kafka-0
 RUN curl https://repo.maven.apache.org/maven2/org/apache/spark/spark-streaming-kafka-0-10_2.12/${spark_version}/spark-streaming-kafka-0-10_2.12-${spark_version}.jar -o spark-streaming-kafka-0-10_2.12-${spark_version}.jar &&  \
     mv spark-streaming-kafka-0-10_2.12-${spark_version}.jar /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/jars/
 
+RUN curl https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.31.1/sqlite-jdbc-3.31.1.jar -o sqlite-jdbc-3.31.1.jar &&  \
+    mv sqlite-jdbc-3.31.1.jar /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}/jars/
+
+
 ENV SPARK_HOME /usr/bin/spark-${spark_version}-bin-hadoop${hadoop_version}
 ENV SPARK_MASTER_HOST spark-master
 ENV SPARK_MASTER_PORT 7077
